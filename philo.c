@@ -6,7 +6,7 @@
 /*   By: rukia <rukia@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 13:30:55 by abouguri          #+#    #+#             */
-/*   Updated: 2024/12/01 17:59:10 by rukia            ###   ########.fr       */
+/*   Updated: 2024/12/01 18:04:10 by rukia            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+is_input_numeric(int ac, char **av)
+{
+    int i;
+    int j;
+    
+    i = 1;
+    while(i < ac)
+    {
+        j = 0;
+        while(av[i][j])
+        {
+            if (av[i][j] < '0' || av[i][j] > '9')
+                return (ERROR_WRONG_INPUT);
+            j++;
+        }
+        i++;
+    }
+    return (SUCCESS);
+}
 
 int validate_arguments(int ac,char  **av)
 {

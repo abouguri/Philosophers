@@ -6,7 +6,7 @@
 /*   By: rukia <rukia@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 13:30:55 by abouguri          #+#    #+#             */
-/*   Updated: 2024/12/01 18:04:10 by rukia            ###   ########.fr       */
+/*   Updated: 2024/12/01 18:07:39 by rukia            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,20 +17,20 @@
 
 is_input_numeric(int ac, char **av)
 {
-    int i;
-    int j;
+    int arg_index;
+    int char_index;
     
-    i = 1;
-    while(i < ac)
+    arg_index = 1;
+    while(arg_index < ac)
     {
-        j = 0;
-        while(av[i][j])
+        char_index = 0;
+        while(av[arg_index][char_index])
         {
-            if (av[i][j] < '0' || av[i][j] > '9')
+            if (av[arg_index][char_index] < '0' || av[arg_index][char_index] > '9')
                 return (ERROR_WRONG_INPUT);
-            j++;
+            char_index++;
         }
-        i++;
+        arg_index++;
     }
     return (SUCCESS);
 }

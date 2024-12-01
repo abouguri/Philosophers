@@ -6,7 +6,7 @@
 /*   By: rukia <rukia@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 13:30:55 by abouguri          #+#    #+#             */
-/*   Updated: 2024/12/01 18:35:03 by rukia            ###   ########.fr       */
+/*   Updated: 2024/12/01 18:59:25 by rukia            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-is_input_numeric(int ac, char **av)
+int is_input_numeric(int ac, char **av)
 {
     int arg_index;
     int char_index;
@@ -35,7 +35,7 @@ is_input_numeric(int ac, char **av)
     return (SUCCESS);
 }
 
-int atoi(const char *str, )
+int ft_atoi(const char *str)
 {
     int count = 0;
     long result = 0;
@@ -90,24 +90,34 @@ int validate_arguments(int ac,char  **av)
 	return (SUCCESS);
 }
 
-void    display_help_message()
+void    display_usage(void)
 {
-
+    printf("\n!!!!!!!!WRONG INPUT!!!!!!!!\n\n");
+    printf("Usage:\n");
+    printf("  ./philo nb_philos time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]\n");
+    printf("\nExample:\n");
+    printf("  ./philo 4 800 200 200 5\n\n");
+    printf("Parameters:\n");
+    printf("  nb_philos*:                        1-200\n");
+    printf("  time_to_die* (ms):                 60+\n");
+    printf("  time_to_eat* (ms):                 60+\n");
+    printf("  time_to_sleep* (ms):               60+\n");
+    printf("  nb_each_philo_must_eat (Optional): 0+\n");
 }
 
-int initialize_simulation(int ac, char **av)
-{
+// int initialize_simulation(int ac, char **av)
+// {
     
-}
+// }
 
 int main(int ac, char **av)
 {
     if (validate_arguments(ac, av) != 0)
 	{
-		display_help_message();
+		display_usage();
 		return (ERROR_WRONG_INPUT);
 	}
-	if (initialize_simulation(ac, av) != 0)
-		return (ERROR_MALLOC_FAILURE);
+	// if (initialize_simulation(ac, av) != 0)
+	// 	return (ERROR_MALLOC_FAILURE);
     return (SUCCESS);
 }

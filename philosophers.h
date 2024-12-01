@@ -14,5 +14,7 @@
 # define ERROR_WRONG_INPUT 1
 # define ERROR_MALLOC_FAILURE 2
 
+# define INT_MIN -2147483648
+# define INT_MAX 2147483647
 
 #endif

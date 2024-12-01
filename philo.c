@@ -6,7 +6,7 @@
 /*   By: rukia <rukia@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 13:30:55 by abouguri          #+#    #+#             */
-/*   Updated: 2024/12/01 18:07:39 by rukia            ###   ########.fr       */
+/*   Updated: 2024/12/01 18:35:03 by rukia            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,57 @@ is_input_numeric(int ac, char **av)
     return (SUCCESS);
 }
 
+int atoi(const char *str, )
+{
+    int count = 0;
+    long result = 0;
+    int sign = 1;
+
+    while (str[count] == '\r' || str[count] == '\t' || str[count] == ' '
+        || str[count] == '\f' || str[count] == '\v' || str[count] == '\n')
+        count++;
+    if (str[count] == '-')
+    {
+        sign = -1;
+        count++;
+    }
+    else if (str[count] == '+')
+        count++;
+    if (!(str[count] >= '0' && str[count] <= '9'))
+        return (0);
+    while (str[count] >= '0' && str[count] <= '9')
+    {
+        result = result * 10 + (str[count++] - '0');
+        if ((result * sign) > INT_MAX || (result * sign) < INT_MIN)
+            return (0);
+    }
+    return ((int)(result * sign));
+}
+
+int validate_input_constraints(int ac, char **av)
+{
+    int arg_index;
+
+    arg_index = 1;
+    if (ac == 6 && ft_atoi(av[5]) <= 0)
+        return (ERROR_WRONG_INPUT);
+    if (ft_atoi(av[arg_index]) < 1 || ft_atoi(av[arg_index]) > 200)
+        return (ERROR_WRONG_INPUT);
+    while (++arg_index < 5)
+    {
+        if (ft_atoi(av[arg_index]) < 60)
+            return (ERROR_WRONG_INPUT);
+    }
+    return (SUCCESS);
+}
+
 int validate_arguments(int ac,char  **av)
 {
     if (ac < 5 || ac > 6)
 		return (ERROR_WRONG_INPUT);
 	if (is_input_numeric(ac, av) != 0)
 		return (ERROR_WRONG_INPUT);
-	if (wrong_input_check(ac, av))
+	if (validate_input_constraints(ac, av))
 		return (ERROR_WRONG_INPUT);
 	return (SUCCESS);
 }

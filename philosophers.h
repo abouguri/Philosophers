@@ -15,6 +15,14 @@
 # define ERROR_MALLOC_FAILURE 2
 # define ERROR_MUTEX_INIT 3
 
+# define PHILO_TAKE_FORKS "has taken a fork"
+# define PHILO_THINK "is thinking"
+# define PHILO_SLEEP "is sleeping"
+# define PHILO_EAT "is eating"
+# define PHILO_DIED "died"
+
+#define EAT_TIME_OFFSET 10
+
 # define INT_MIN -2147483648
 # define INT_MAX 2147483647
 

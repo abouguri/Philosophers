@@ -6,7 +6,7 @@
 /*   By: rukia <rukia@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 13:30:55 by abouguri          #+#    #+#             */
-/*   Updated: 2024/12/01 20:32:05 by rukia            ###   ########.fr       */
+/*   Updated: 2024/12/02 19:21:51 by rukia            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,15 +272,359 @@ int	philos_count(t_data *data)
 	return (nb_philos);
 }
 
+uint64_t	fetch_die_time(t_data *data)
+{
+	uint64_t	die_time;
+
+	pthread_mutex_lock(&data->mutex_die_time);
+	die_time = data->die_time;
+	pthread_mutex_unlock(&data->mutex_die_time);
+	return (die_time);
+}
+
+uint64_t	fetch_sleep_time(t_data *data)
+{
+	uint64_t	sleep_time;
+
+	pthread_mutex_lock(&data->mutex_sleep_time);
+	sleep_time = data->sleep_time;
+	pthread_mutex_unlock(&data->mutex_sleep_time);
+	return (sleep_time);
+}
+
+uint64_t	fetch_eat_time(t_data *data)
+{
+	uint64_t	eat_time;
+
+	pthread_mutex_lock(&data->mutex_eat_time);
+	eat_time = data->eat_time;
+	pthread_mutex_unlock(&data->mutex_eat_time);
+	return (eat_time);
+}
+
+uint64_t	fetch_last_eat_time(t_philo *philo)
+{
+	uint64_t	last_eat_time;
+
+	pthread_mutex_lock(&philo->mutex_last_eat_time);
+	last_eat_time = philo->last_eat_time;
+	pthread_mutex_unlock(&philo->mutex_last_eat_time);
+	return (last_eat_time);
+}
+
+t_state fetch_philo_state(t_philo *philo)
+{
+    t_state state;
+
+    pthread_mutex_lock(&philo->mutex_state);
+    state = philo->state;
+    pthread_mutex_unlock(&philo->mutex_state);
+
+    return (state);
+}
+
+void	update_philo_state(t_philo *philo, t_state state)
+{
+	pthread_mutex_lock(&philo->mutex_state);
+	if (philo->state != DEAD)
+		philo->state = state;
+	pthread_mutex_unlock(&philo->mutex_state);
+}
+
+bool	philo_died(t_philo *philo)
+{
+	bool		result;
+	t_data		*data;
+
+	data = philo->data;
+	result = false;
+	if (get_time() - fetch_last_eat_time(philo) > fetch_die_time(data) && fetch_philo_state(philo) != EATING)
+	{
+		update_philo_state(philo, DEAD);
+		result = true;
+	}
+	return (result);
+}
+
+bool	is_simulation_running(t_data *data)
+{
+	bool	keep_iterating;
+
+	pthread_mutex_lock(&data->mutex_keep_iter);
+	keep_iterating = data->keep_iterating;
+	pthread_mutex_unlock(&data->mutex_keep_iter);
+	return (keep_iterating);
+}
+
+uint64_t	fetch_start_time(t_data *data)
+{
+	uint64_t	time;
+
+	pthread_mutex_lock(&data->mutex_start_time);
+	time = data->start_time;
+	pthread_mutex_unlock(&data->mutex_start_time);
+	return (time);
+}
+
+void	print_msg(t_data *data, int id, char *msg)
+{
+	uint64_t	time;
+
+	time = get_time() - fetch_start_time(data);
+	pthread_mutex_lock(&data->mutex_print);
+	if (is_simulation_running(data))
+		printf("%llu %d %s\n", time, id, msg);
+	pthread_mutex_unlock(&data->mutex_print);
+}
+
+int	take_left_fork(t_philo *philo)
+{
+	if (philo_died(philo) || fetch_philo_state(philo) == DEAD)
+		return (1);
+	pthread_mutex_lock(philo->left_fork);
+	print_msg(philo->data, philo->id, PHILO_TAKE_FORKS);
+	return (0);
+}
+
+void ft_usleep(uint64_t sleep_time)
+{
+    uint64_t start;
+
+    start = get_time(); // Get the current time in milliseconds
+    while ((get_time() - start) < sleep_time)
+        usleep(500); // Sleep for 500 microseconds to prevent busy-waiting
+}
+
+int	solo_philo_case(t_philo *philo)
+{
+	take_left_fork(philo);
+	ft_usleep(fetch_die_time(philo->data));
+	update_philo_state(philo, DEAD);
+	return (1);
+}
+
+int	take_right_fork(t_philo *philo)
+{
+	if (philo_died(philo) || fetch_philo_state(philo) == DEAD)
+		return (1);
+	pthread_mutex_lock(philo->right_fork);
+	print_msg(philo->data, philo->id, PHILO_TAKE_FORKS);
+	return (0);
+}
+
+void unlock_left_fork(t_philo *philo)
+{
+    pthread_mutex_unlock(philo->left_fork);
+}
+
+void unlock_right_fork(t_philo *philo)
+{
+    pthread_mutex_unlock(philo->right_fork);
+}
+
+
+void    unlock_forks(t_philo *philo)
+{
+	pthread_mutex_unlock(philo->left_fork);
+	pthread_mutex_unlock(philo->right_fork);
+}
+
+int	take_forks(t_philo *philo)
+{
+    if (philos_count(philo->data) == 1)
+		return (solo_philo_case(philo));
+    if (take_right_fork(philo) != 0)
+		return (1);
+    if (take_left_fork(philo) != 0)
+	{
+		unlock_right_fork(philo);
+		return (1);
+	}
+	return (0);
+}
+
+void	sleep_for_eating(t_philo *philo)
+{
+	ft_usleep(fetch_eat_time(philo->data));
+}
+
+void	update_nb_meals_had(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->mutex_nb_meals_had);
+	philo->nb_meals_had++;
+	pthread_mutex_unlock(&philo->mutex_nb_meals_had);
+}
+
+int	eat(t_philo *philo)
+{
+    if (take_forks(philo) != 0)
+		return (1);
+	update_philo_state(philo, EATING);
+	print_msg(philo->data, philo->id, PHILO_EAT);
+	update_last_meal_time(philo);
+	sleep_for_eating(philo);
+	update_nb_meals_had(philo);
+	unlock_forks(philo);
+	return (0);
+}
+
+int	think(t_philo *philo)
+{
+	update_philo_state(philo, THINKING);
+	if (fetch_philo_state(philo) == DEAD)
+		return (1);
+	print_msg(philo->data, philo->id, PHILO_THINK);
+	return (0);
+}
+
+int	philo_sleep(t_philo *philo)
+{
+	update_philo_state(philo, SLEEPING);
+	if (fetch_philo_state(philo) == DEAD)
+		return (1);
+	print_msg(philo->data, philo->id, PHILO_SLEEP);
+	ft_usleep(fetch_sleep_time(philo->data));
+	return (0);
+}
+
+void	*routine(void *philo_p)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *) philo_p;
+	update_last_meal_time(philo);
+	if (philo->id % 2 == 0)
+		ft_usleep(philo->data->eat_time - EAT_TIME_OFFSET);
+	while (fetch_philo_state(philo) != DEAD)
+    {
+        if (eat(philo) != 0 || fetch_philo_state(philo) == DEAD)
+            break;
+        if (philo_sleep(philo) != 0 || fetch_philo_state(philo) == DEAD)
+            break;
+        if (think(philo) != 0 || fetch_philo_state(philo) == DEAD)
+            break;
+    }
+	return (NULL);
+}
+
+void	set_keep_iterating(t_data *data, bool set_to)
+{
+	pthread_mutex_lock(&data->mutex_keep_iter);
+	data->keep_iterating = set_to;
+	pthread_mutex_unlock(&data->mutex_keep_iter);
+}
+
+void	set_all_philos_dead(t_data *data)
+{
+	t_philo	*philos;
+	int		i;
+	int		nb_philos;
+
+	nb_philos = philos_count(data);
+	philos = data->philos;
+	i = -1;
+	while (++i < nb_philos)
+		update_philo_state(&philos[i], DEAD);
+}
+
+void	*all_alive_routine(void *data_p)
+{
+	int		i;
+	int		nb_philos;
+	t_data	*data;
+	t_philo	*philos;
+
+	data = (t_data *)data_p;
+	philos = data->philos;
+	nb_philos = philos_count(data);
+	i = -1;
+    while (is_simulation_running(data))
+    {
+        i = -1;
+        while (++i < nb_philos)
+        {
+            if (philo_died(&philos[i]) && is_simulation_running(data))
+            {
+                print_msg(data, philos[i].id, PHILO_DIED);
+                set_keep_iterating(data, false);
+                set_all_philos_dead(data);
+                return (NULL);
+            }
+        }
+        usleep(1000); // Monitor at 1ms intervals
+    }
+	return (NULL);
+}
+
+int	get_philo_meals_had(t_philo *philo)
+{
+	int	nb_meals_had;
+
+	pthread_mutex_lock(&philo->mutex_nb_meals_had);
+	nb_meals_had = philo->nb_meals_had;
+	pthread_mutex_unlock(&philo->mutex_nb_meals_had);
+	return (nb_meals_had);
+}
+
+bool	is_philo_done(t_data *data, t_philo *philo)
+{
+	bool	result;
+
+	result = false;
+	if (get_philo_meals_had(philo) >= data->nb_meals)
+		result = true;
+	return (result); 
+}
+
+void	*all_full_routine(void *data_p)
+{
+	t_data	*data;
+	int		i;
+	int		nb_philos;
+
+	data = (t_data *)data_p;
+	i = -1;
+	nb_philos = philos_count(data);
+	while (++i < nb_philos && is_simulation_running(data))
+	{
+		usleep(1000);
+		if (is_philo_done(data, &data->philos[i]) == false)
+			i = -1;
+	}
+	if (is_simulation_running(data) == true)
+	{
+		set_keep_iterating(data, false);
+		set_all_philos_dead(data);
+	}
+	return (NULL);
+}
+
+bool	has_meals_option(t_data *data)
+{
+	if (data->nb_meals > 0)
+		return (true);
+	return (false);
+}
+
 int start_threads(t_data *data)
 {
     int i;
     int nb_of_philos;
 
-    nb_of_philos = get_nb_philos(data); // Get the number of philosophers
+    nb_of_philos = philos_count(data); // Get the number of philosophers
     data->start_time = get_time();
     i = 0;
-    
+    while (i < nb_of_philos)
+    {
+        if (pthread_create(&data->philo_threads[i], NULL, &routine, &data->philos[i]))
+            return (1);
+        i++;
+    }
+    if (pthread_create(&data->monitor_all_alive, NULL, &all_alive_routine, data))
+        return (1);
+    if (has_meals_option(data) && pthread_create(&data->monitor_all_full, NULL, &all_full_routine, data) != 0)
+        return (1);
+    return (0);
 }
 
 int initialize_simulation(int ac, char **av)

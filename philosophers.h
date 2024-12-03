@@ -40,7 +40,7 @@ typedef struct s_philo
 {
     // Philosopher-specific data
     int             id;                 // Philosopher ID
-    int             nb_meals_had;       // Number of meals eaten
+    int             num_meals_had;       // Number of meals eaten
     uint64_t        last_eat_time;      // Timestamp of the last meal (in ms)
 
     // Pointer to shared simulation data
@@ -55,7 +55,7 @@ typedef struct s_philo
     pthread_mutex_t *right_fork;        // Pointer to the right fork mutex
 
     // Synchronization
-    pthread_mutex_t mutex_nb_meals_had; // Protects nb_meals_had
+    pthread_mutex_t mutex_num_meals_had; // Protects num_meals_had
     pthread_mutex_t mutex_last_eat_time; // Protects last_eat_time
 } t_philo;
 
@@ -63,7 +63,7 @@ typedef struct s_philo
 typedef struct s_data
 {
     // Simulation parameters
-    int             nb_philos;         // Number of philosophers
+    int             n_philos;         // Number of philosophers
     int             nb_meals;          // Number of meals each philosopher must eat
     int             nb_full_p;         // Number of philosophers who have finished eating
     bool            keep_iterating;    // Flag to keep the simulation running
@@ -79,7 +79,7 @@ typedef struct s_data
     pthread_mutex_t mutex_die_time;    // Protects die_time
     pthread_mutex_t mutex_sleep_time;  // Protects sleep_time
     pthread_mutex_t mutex_print;       // Ensures atomic printing
-    pthread_mutex_t mutex_nb_philos;   // Protects nb_philos
+    pthread_mutex_t mutex_n_philos;   // Protects n_philos
     pthread_mutex_t mutex_keep_iter;   // Protects keep_iterating flag
     pthread_mutex_t mutex_start_time;  // Protects start_time
 

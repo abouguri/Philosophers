@@ -19,7 +19,7 @@ void	print_msg(t_data *data, int id, char *msg)
 	time = get_time() - fetch_start_time(data);
 	pthread_mutex_lock(&data->mutex_print);
 	if (is_simulation_running(data))
-		printf("%llu %d %s\n", time, id, msg);
+		printf("%lu %d %s\n", time, id, msg);
 	pthread_mutex_unlock(&data->mutex_print);
 }
 

@@ -10,10 +10,14 @@
 # include <stdint.h>
 # include <stdbool.h>
 
+// Macros for Return Values
 # define SUCCESS 0
 # define ERROR_WRONG_INPUT 1
 # define ERROR_MALLOC_FAILURE 2
 # define ERROR_MUTEX_INIT 3
+
+#define ERROR_THREAD_CREATION 4
+#define ERROR_THREAD_JOIN 5
 
 # define PHILO_TAKE_FORKS "has taken a fork"
 # define PHILO_THINK "is thinking"
@@ -92,6 +96,66 @@ typedef struct s_data
     pthread_mutex_t *forks;            // Array of mutexes representing forks
     t_philo         *philos;           // Array of philosopher data structures
 } t_data;
+
+
+// Function Prototypes
+
+// Core
+int     initialize_simulation(int ac, char **av);
+int     start_threads(t_data *data);
+int     wait_for_threads(t_data *data);
+void    cleanup_simulation(t_data *data);
+
+// Input Validation
+int     validate_arguments(int ac, char **av);
+void    display_usage(void);
+
+// Data Initialization
+int     initialize_data(t_data *data, int ac, char **av);
+int     initialize_philos(t_data *data);
+int     initialize_forks(t_data *data);
+
+// Time Utilities
+uint64_t get_time(void);
+void    ft_usleep(uint64_t sleep_time);
+
+// Mutex Utilities
+int     initialize_philosopher_mutexes(t_philo *philo);
+void    set_keep_iterating(t_data *data, bool set_to);
+
+// Synchronization
+t_state fetch_philo_state(t_philo *philo);
+void    update_philo_state(t_philo *philo, t_state state);
+uint64_t fetch_die_time(t_data *data);
+uint64_t fetch_eat_time(t_data *data);
+uint64_t fetch_sleep_time(t_data *data);
+uint64_t fetch_last_eat_time(t_philo *philo);
+uint64_t fetch_start_time(t_data *data);
+
+// Philosopher Actions
+int     eat(t_philo *philo);
+int     think(t_philo *philo);
+int     philo_sleep(t_philo *philo);
+void    update_last_meal_time(t_philo *philo);
+void    update_num_meals_had(t_philo *philo);
+
+// Monitoring
+void    *routine(void *philo_p);
+void    *all_alive_routine(void *data_p);
+void    *all_full_routine(void *data_p);
+bool    is_philo_done(t_data *data, t_philo *philo);
+bool    has_meals_option(t_data *data);
+bool    is_simulation_running(t_data *data);
+bool    philo_died(t_philo *philo);
+
+// Fork Handling
+int     take_forks(t_philo *philo);
+int     take_left_fork(t_philo *philo);
+int     take_right_fork(t_philo *philo);
+void    unlock_forks(t_philo *philo);
+
+// Logging
+void    print_msg(t_data *data, int id, char *msg);
 
 
 #endif

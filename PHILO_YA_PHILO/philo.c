@@ -6,7 +6,7 @@
 /*   By: rukia <rukia@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 13:30:55 by abouguri          #+#    #+#             */
-/*   Updated: 2024/12/03 19:57:03 by rukia            ###   ########.fr       */
+/*   Updated: 2024/12/04 03:39:19 by rukia            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -434,7 +434,10 @@ int	take_forks(t_philo *philo)
     if (philos_count(philo->data) == 1)
 		return (solo_philo_case(philo));
     if (take_right_fork(philo) != 0)
+    {
+		unlock_right_fork(philo);
 		return (1);
+	}
     if (take_left_fork(philo) != 0)
 	{
 		unlock_right_fork(philo);
@@ -678,8 +681,13 @@ int initialize_simulation(int ac, char **av)
     
     if (initialize_data(&data, ac, av) != 0)
         return (ERROR_MALLOC_FAILURE);
-    initialize_philos(&data);
-    initialize_forks(&data);
+    // initialize_philos(&data);
+    // initialize_forks(&data);
+    if (initialize_philos(&data) != 0 || initialize_forks(&data) != 0)
+    {
+        cleanup_simulation(&data);
+        return (ERROR_MALLOC_FAILURE);
+    }
     start_threads(&data);
     wait_for_threads(&data);
     cleanup_simulation(&data);

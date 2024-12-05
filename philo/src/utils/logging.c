@@ -6,7 +6,7 @@
 /*   By: rukia <rukia@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 21:26:52 by rukia             #+#    #+#             */
-/*   Updated: 2024/12/04 04:24:21 by rukia            ###   ########.fr       */
+/*   Updated: 2024/12/05 03:00:09 by rukia            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	print_msg(t_data *data, int id, char *msg)
 	time = get_time() - fetch_start_time(data);
 	pthread_mutex_lock(&data->mutex_print);
 	if (is_simulation_running(data))
-		printf("%lu %d %s\n", time, id, msg);
+		printf("%llu %d %s\n", time, id, msg);
 	pthread_mutex_unlock(&data->mutex_print);
 }
 

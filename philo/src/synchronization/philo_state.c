@@ -12,15 +12,14 @@
 
 #include "philosophers.h"
 
-t_state fetch_philo_state(t_philo *philo)
+t_state	fetch_philo_state(t_philo *philo)
 {
-    t_state state;
+	t_state	state;
 
-    pthread_mutex_lock(&philo->mutex_state);
-    state = philo->state;
-    pthread_mutex_unlock(&philo->mutex_state);
-
-    return (state);
+	pthread_mutex_lock(&philo->mutex_state);
+	state = philo->state;
+	pthread_mutex_unlock(&philo->mutex_state);
+	return (state);
 }
 
 void	update_philo_state(t_philo *philo, t_state state)
@@ -33,12 +32,13 @@ void	update_philo_state(t_philo *philo, t_state state)
 
 bool	philo_died(t_philo *philo)
 {
-	bool		result;
-	t_data		*data;
+	bool	result;
+	t_data	*data;
 
 	data = philo->data;
 	result = false;
-	if (get_time() - fetch_last_eat_time(philo) > fetch_die_time(data) && fetch_philo_state(philo) != EATING)
+	if (get_time() - fetch_last_eat_time(philo) > fetch_die_time(data)
+		&& fetch_philo_state(philo) != EATING)
 	{
 		update_philo_state(philo, DEAD);
 		result = true;
@@ -53,7 +53,7 @@ bool	is_philo_done(t_data *data, t_philo *philo)
 	result = false;
 	if (get_philo_meals_had(philo) >= data->nb_meals)
 		result = true;
-	return (result); 
+	return (result);
 }
 
 bool	has_meals_option(t_data *data)

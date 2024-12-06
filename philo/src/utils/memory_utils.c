@@ -12,40 +12,39 @@
 
 #include "philosophers.h"
 
-int malloc_data(t_data *data)
+int	malloc_data(t_data *data)
 {
-    data->philos = malloc(sizeof(t_philo) * data->n_philos);
-    if (data->philos == NULL)
+	data->philos = malloc(sizeof(t_philo) * data->n_philos);
+	if (data->philos == NULL)
 		return (ERROR_MALLOC_FAILURE);
-    data->forks = malloc(sizeof(pthread_mutex_t) * data->n_philos);
-    if (data->forks == NULL)
+	data->forks = malloc(sizeof(pthread_mutex_t) * data->n_philos);
+	if (data->forks == NULL)
 		return (free(data->philos), ERROR_MALLOC_FAILURE);
-    data->philo_threads = malloc(sizeof(pthread_t) * data->n_philos);
-    if (data->philo_threads == NULL)
+	data->philo_threads = malloc(sizeof(pthread_t) * data->n_philos);
+	if (data->philo_threads == NULL)
 		return (free(data->philos), free(data->forks), ERROR_MALLOC_FAILURE);
-    return (0);
+	return (0);
 }
 
-int initialize_data(t_data  *data,int ac,char **av)
+int	initialize_data(t_data *data, int ac, char **av)
 {
-    data->nb_full_p = 0;
-    data->keep_iterating = true;
-    data->n_philos = ft_atoi(av[1]);
-    data->die_time = (uint64_t)ft_atoi(av[2]);
-    data->eat_time = (uint64_t)ft_atoi(av[3]);
-    data->sleep_time = (uint64_t)ft_atoi(av[4]);
-    data->nb_meals = -1;
-
-    if (ac == 6)
-        data->nb_meals = ft_atoi(av[5]);
-    pthread_mutex_init(&data->mutex_eat_time, NULL);
-    pthread_mutex_init(&data->mutex_sleep_time, NULL);
-    pthread_mutex_init(&data->mutex_die_time, NULL);
-    pthread_mutex_init(&data->mutex_print, NULL);
-    pthread_mutex_init(&data->mutex_n_philos, NULL);
-    pthread_mutex_init(&data->mutex_keep_iter, NULL);
-    pthread_mutex_init(&data->mutex_start_time, NULL);
-    return (malloc_data(data));
+	data->nb_full_p = 0;
+	data->keep_iterating = true;
+	data->n_philos = ft_atoi(av[1]);
+	data->die_time = (uint64_t)ft_atoi(av[2]);
+	data->eat_time = (uint64_t)ft_atoi(av[3]);
+	data->sleep_time = (uint64_t)ft_atoi(av[4]);
+	data->nb_meals = -1;
+	if (ac == 6)
+		data->nb_meals = ft_atoi(av[5]);
+	pthread_mutex_init(&data->mutex_eat_time, NULL);
+	pthread_mutex_init(&data->mutex_sleep_time, NULL);
+	pthread_mutex_init(&data->mutex_die_time, NULL);
+	pthread_mutex_init(&data->mutex_print, NULL);
+	pthread_mutex_init(&data->mutex_n_philos, NULL);
+	pthread_mutex_init(&data->mutex_keep_iter, NULL);
+	pthread_mutex_init(&data->mutex_start_time, NULL);
+	return (malloc_data(data));
 }
 
 void	cleanup_simulation(t_data *data)
@@ -73,4 +72,3 @@ void	cleanup_simulation(t_data *data)
 	free(data->philos);
 	free(data->forks);
 }
-

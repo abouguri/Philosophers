@@ -1,26 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philos_count.c                                     :+:      :+:    :+:   */
+/*   extra.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abouguri <abouguri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 20:50:02 by abouguri          #+#    #+#             */
-/*   Updated: 2024/12/05 17:12:30 by abouguri         ###   ########.fr       */
+/*   Updated: 2024/12/06 22:52:22 by abouguri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-
-int	philos_count(t_data *data)
+int philos_count(t_data *data)
 {
-	int	n_philos;
-
-	pthread_mutex_lock(&data->mutex_n_philos);
-	n_philos = data->n_philos;
-	pthread_mutex_unlock(&data->mutex_n_philos);
-	return (n_philos);
+    return data->n_philos;
 }
 
 void	sleep_for_eating(t_philo *philo)

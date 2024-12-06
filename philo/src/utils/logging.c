@@ -6,7 +6,7 @@
 /*   By: abouguri <abouguri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 21:26:52 by abouguri          #+#    #+#             */
-/*   Updated: 2024/12/05 17:12:30 by abouguri         ###   ########.fr       */
+/*   Updated: 2024/12/05 23:24:40 by abouguri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@ void	print_msg(t_data *data, int id, char *msg)
 {
 	uint64_t	time;
 
-	time = get_time() - fetch_start_time(data);
 	pthread_mutex_lock(&data->mutex_print);
+	time = get_time() - fetch_start_time(data);
 	if (is_simulation_running(data))
-		printf("%llu %d %s\n", time, id, msg);
+		printf("%lu %d %s\n", time, id, msg);
 	pthread_mutex_unlock(&data->mutex_print);
 }
 

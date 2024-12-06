@@ -12,22 +12,22 @@
 
 #include "philosophers.h"
 
-int initialize_philosopher_mutexes(t_philo *philo)
+int	initialize_philosopher_mutexes(t_philo *philo)
 {
-    if (pthread_mutex_init(&philo->mutex_state, NULL) != 0)
-        return (ERROR_MUTEX_INIT);
-    if (pthread_mutex_init(&philo->mutex_num_meals_had, NULL) != 0)
-    {
-        pthread_mutex_destroy(&philo->mutex_state);
-        return (ERROR_MUTEX_INIT);
-    }
-    if (pthread_mutex_init(&philo->mutex_last_eat_time, NULL) != 0)
-    {
-        pthread_mutex_destroy(&philo->mutex_state);
-        pthread_mutex_destroy(&philo->mutex_num_meals_had);
-        return (ERROR_MUTEX_INIT);
-    }
-    return (SUCCESS);
+	if (pthread_mutex_init(&philo->mutex_state, NULL) != 0)
+		return (ERROR_MUTEX_INIT);
+	if (pthread_mutex_init(&philo->mutex_num_meals_had, NULL) != 0)
+	{
+		pthread_mutex_destroy(&philo->mutex_state);
+		return (ERROR_MUTEX_INIT);
+	}
+	if (pthread_mutex_init(&philo->mutex_last_eat_time, NULL) != 0)
+	{
+		pthread_mutex_destroy(&philo->mutex_state);
+		pthread_mutex_destroy(&philo->mutex_num_meals_had);
+		return (ERROR_MUTEX_INIT);
+	}
+	return (SUCCESS);
 }
 
 int	take_left_fork(t_philo *philo)
@@ -48,12 +48,12 @@ int	take_right_fork(t_philo *philo)
 	return (0);
 }
 
-void unlock_left_fork(t_philo *philo)
+void	unlock_left_fork(t_philo *philo)
 {
-    pthread_mutex_unlock(philo->left_fork);
+	pthread_mutex_unlock(philo->left_fork);
 }
 
-void unlock_right_fork(t_philo *philo)
+void	unlock_right_fork(t_philo *philo)
 {
-    pthread_mutex_unlock(philo->right_fork);
+	pthread_mutex_unlock(philo->right_fork);
 }

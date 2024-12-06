@@ -6,15 +6,15 @@
 /*   By: abouguri <abouguri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 20:50:02 by abouguri          #+#    #+#             */
-/*   Updated: 2024/12/06 22:52:22 by abouguri         ###   ########.fr       */
+/*   Updated: 2024/12/06 23:04:17 by abouguri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int philos_count(t_data *data)
+int	philos_count(t_data	*data)
 {
-    return data->n_philos;
+	return (data->n_philos);
 }
 
 void	sleep_for_eating(t_philo *philo)

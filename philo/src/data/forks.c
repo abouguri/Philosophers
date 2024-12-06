@@ -6,7 +6,7 @@
 /*   By: abouguri <abouguri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 21:37:15 by abouguri          #+#    #+#             */
-/*   Updated: 2024/12/06 20:25:59 by abouguri         ###   ########.fr       */
+/*   Updated: 2024/12/06 23:08:47 by abouguri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,14 @@ void	cleanup_forks(t_data *data, int count)
 
 int	take_forks(t_philo *philo)
 {
-    if (philos_count(philo->data) == 1)
+	if (philos_count(philo->data) == 1)
 		return (solo_philo_case(philo));
-    if (take_right_fork(philo) != 0)
-    {
+	if (take_right_fork(philo) != 0)
+	{
 		unlock_right_fork(philo);
 		return (1);
 	}
-    if (take_left_fork(philo) != 0)
+	if (take_left_fork(philo) != 0)
 	{
 		unlock_right_fork(philo);
 		return (1);

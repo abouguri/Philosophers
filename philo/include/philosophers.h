@@ -13,14 +13,14 @@
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
-# include <unistd.h>
 # include <pthread.h>
+# include <stdbool.h>
+# include <stdint.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
 # include <sys/time.h>
-# include <stdint.h>
-# include <stdbool.h>
+# include <unistd.h>
 
 # define SUCCESS 0
 # define ERROR_WRONG_INPUT 1
@@ -38,10 +38,10 @@
 # define INT_MIN -2147483648
 # define INT_MAX 2147483647
 
-# define EAT_TIME_OFFSET         10
+# define EAT_TIME_OFFSET 10
 
-# define INT_MIN                 -2147483648
-# define INT_MAX                 2147483647
+# define INT_MIN -2147483648
+# define INT_MAX 2147483647
 
 typedef enum e_philo_state
 {
@@ -51,7 +51,7 @@ typedef enum e_philo_state
 	DEAD = 3,
 	FULL = 4,
 	IDLE = 5
-}			t_state;
+}					t_state;
 
 typedef struct s_philo
 {
@@ -65,7 +65,7 @@ typedef struct s_philo
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	mutex_num_meals_had;
 	pthread_mutex_t	mutex_last_eat_time;
-}			t_philo;
+}					t_philo;
 
 // Shared Simulation Data
 typedef struct s_data
@@ -90,68 +90,68 @@ typedef struct s_data
 	pthread_t		*philo_threads;
 	pthread_mutex_t	*forks;
 	t_philo			*philos;
-}			t_data;
+}					t_data;
 
-int			initialize_simulation(int ac, char **av);
-void		cleanup_simulation(t_data *data);
-int			start_threads(t_data *data);
-int			wait_for_threads(t_data *data);
+int					initialize_simulation(int ac, char **av);
+void				cleanup_simulation(t_data *data);
+int					start_threads(t_data *data);
+int					wait_for_threads(t_data *data);
 
-int			is_input_numeric(int ac, char **av);
-int			validate_input_constraints(int ac, char **av);
-int			validate_arguments(int ac, char **av);
-void		display_usage(void);
-int			ft_atoi(const char *str);
+int					is_input_numeric(int ac, char **av);
+int					validate_input_constraints(int ac, char **av);
+int					validate_arguments(int ac, char **av);
+void				display_usage(void);
+int					ft_atoi(const char *str);
 
-int			malloc_data(t_data *data);
-int			initialize_data(t_data *data, int ac, char **av);
-int			initialize_philos(t_data *data);
-int			initialize_forks(t_data *data);
-void		assign_forks(t_data *data);
+int					malloc_data(t_data *data);
+int					initialize_data(t_data *data, int ac, char **av);
+int					initialize_philos(t_data *data);
+int					initialize_forks(t_data *data);
+void				assign_forks(t_data *data);
 
-void		cleanup_philosophers(t_philo *philos, int count);
-void		cleanup_forks(t_data *data, int count);
+void				cleanup_philosophers(t_philo *philos, int count);
+void				cleanup_forks(t_data *data, int count);
 
-uint64_t	get_time(void);
-void		ft_usleep(uint64_t sleep_time);
-uint64_t	fetch_die_time(t_data *data);
-uint64_t	fetch_sleep_time(t_data *data);
-uint64_t	fetch_eat_time(t_data *data);
-uint64_t	fetch_last_eat_time(t_philo *philo);
-void		update_last_meal_time(t_philo *philo);
+uint64_t			get_time(void);
+void				ft_usleep(uint64_t sleep_time);
+uint64_t			fetch_die_time(t_data *data);
+uint64_t			fetch_sleep_time(t_data *data);
+uint64_t			fetch_eat_time(t_data *data);
+uint64_t			fetch_last_eat_time(t_philo *philo);
+void				update_last_meal_time(t_philo *philo);
 
-int			initialize_philosopher_mutexes(t_philo *philo);
-void		set_keep_iterating(t_data *data, bool set_to);
-t_state		fetch_philo_state(t_philo *philo);
-void		update_philo_state(t_philo *philo, t_state state);
-bool		is_simulation_running(t_data *data);
-bool		philo_died(t_philo *philo);
+int					initialize_philosopher_mutexes(t_philo *philo);
+void				set_keep_iterating(t_data *data, bool set_to);
+t_state				fetch_philo_state(t_philo *philo);
+void				update_philo_state(t_philo *philo, t_state state);
+bool				is_simulation_running(t_data *data);
+bool				philo_died(t_philo *philo);
 
-int			take_forks(t_philo *philo);
-int			take_left_fork(t_philo *philo);
-int			take_right_fork(t_philo *philo);
-void		unlock_left_fork(t_philo *philo);
-void		unlock_right_fork(t_philo *philo);
-void		unlock_forks(t_philo *philo);
+int					take_forks(t_philo *philo);
+int					take_left_fork(t_philo *philo);
+int					take_right_fork(t_philo *philo);
+void				unlock_left_fork(t_philo *philo);
+void				unlock_right_fork(t_philo *philo);
+void				unlock_forks(t_philo *philo);
 
-int			solo_philo_case(t_philo *philo);
-int			eat(t_philo *philo);
-int			think(t_philo *philo);
-int			philo_sleep(t_philo *philo);
-void		sleep_for_eating(t_philo *philo);
-void		update_num_meals_had(t_philo *philo);
+int					solo_philo_case(t_philo *philo);
+int					eat(t_philo *philo);
+int					think(t_philo *philo);
+int					philo_sleep(t_philo *philo);
+void				sleep_for_eating(t_philo *philo);
+void				update_num_meals_had(t_philo *philo);
 
-void		*routine(void *philo_p);
-void		*all_alive_routine(void *data_p);
-void		*all_full_routine(void *data_p);
-void		set_all_philos_dead(t_data *data);
-bool		is_philo_done(t_data *data, t_philo *philo);
-bool		has_meals_option(t_data *data);
+void				*routine(void *philo_p);
+void				*all_alive_routine(void *data_p);
+void				*all_full_routine(void *data_p);
+void				set_all_philos_dead(t_data *data);
+bool				is_philo_done(t_data *data, t_philo *philo);
+bool				has_meals_option(t_data *data);
 
-void		print_msg(t_data *data, int id, char *msg);
+void				print_msg(t_data *data, int id, char *msg);
 
-int			get_philo_meals_had(t_philo *philo);
-uint64_t	fetch_start_time(t_data *data);
-int			philos_count(t_data *data);
+int					get_philo_meals_had(t_philo *philo);
+uint64_t			fetch_start_time(t_data *data);
+int					philos_count(t_data *data);
 
 #endif

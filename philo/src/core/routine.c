@@ -6,7 +6,7 @@
 /*   By: abouguri <abouguri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 20:42:36 by abouguri          #+#    #+#             */
-/*   Updated: 2024/12/05 17:12:38 by abouguri         ###   ########.fr       */
+/*   Updated: 2024/12/06 04:22:01 by abouguri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ int	think(t_philo *philo)
 	if (fetch_philo_state(philo) == DEAD)
 		return (1);
 	print_msg(philo->data, philo->id, PHILO_THINK);
+	if (philo->data->n_philos == 3)
+		ft_usleep(1);
 	return (0);
 }
 
